@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>学习笔记-主题页</title>
+</head>
+<body>
+<!--
+      子模板继承父模板
+  （1）第一行必须包含extends扩展标签，导入base.html的所有内容
+  （2）第一行必须是导航栏
+  （3）子模板中非继承父模板的代码都包含在header和content块标签中
+-->
+{% extends "learning_logs/base.html" %}
+{% load django_bootstrap5 %}<!--加载django-bootstrap5模板标签集-->
+{% block header %}<!--展示页面信息开始位置-->
+<!--标题：背景色-信息色、上下的内外间距16px、文本居中、标题样式5、粗体-->
+<div class="bg-info my-3 py-3 text-center">
+  <h1 class="display-5 fw-bold">Topics</h1>
+</div>
+{% endblock header %}<!--展示页面信息结束位置-->
+{% block content %}<!--子模板独有内容代码开始位置-->
+<!--展示所有主题-->
+<p>
+  <!--主题新增链接-->
+  <a class="btn btn-primary" href="{% url 'learning_logs:new_topic' %}">add a new topic</a>
+</p>
+<ul class="list-group"><!--无序列表：用ul（Unordered List）标签表示、列表组属性-->
+  {% for topic in topics %}<!--for循环遍历上下文字典中的列表topics-->
+  <li class="list-group-item"><!--li标签：列表组项-->
+    <!--|右边表示模板过滤器-->
+    {% load tz %}<!--加载时区标签-->
+    {% localtime on %}<!--时区区域内的时区设置控制，与settings中的USE_TZ设置用法一样-->
+    {% timezone "Asia/Shanghai" %}<!--设置时区为本地时区：亚洲/上海-->
+    <h5>
+      {{ topic.date_added|date:'Y-m-d H:i:s T' }}<!--date:'Y-m-d H:i:s T'以此格式显示时间戳-->
+      <small>
+        <!--比h5小一号字体、左外边距8px-->
+        <a class="btn btn-primary ms-2" href="{% url 'learning_logs:topic' topic.id %}">view its entries</a>
+        <a class="btn btn-primary ms-2" href="{% url 'learning_logs:edit_topic' topic.id %}">edit this topic</a>
+      </small>
+    </h5>
+    {% endtimezone %}<!--时区标签结束位置-->
+    {% endlocaltime %}<!--时区区域结束位置-->
+    <!--{{ topic.text|linebreaks }}中linebreaks：包含换行符的长条目转换为适应与浏览器的格式-->
+    <h4>{{ topic }}</h4>
+  </li>
+  {% empty %}<!--列表topics为空时采取的措施-->
+  <li>No topics have been added yet.</li><!--没有添加任何主题-->
+  {% endfor %}<!--for循环结束位置-->
+</ul>
+{% endblock content %}<!--子模板独有内容代码结束位置-->
+</body>
+</html>

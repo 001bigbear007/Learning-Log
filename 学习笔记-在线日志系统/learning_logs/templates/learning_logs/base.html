@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+{% load django_bootstrap5 %}<!--加载django-bootstrap5模板标签集-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"><!--IE兼容模式-->
+  <!--
+        视图区域
+    （1）一般比浏览器可视区域大
+    （2）常用默认设置：980px/1024px
+    （3）width：设置layout viewport的宽度，为一个正整数，或字符串（设备宽度）"=device-width"
+    （4）initial-scale：设置页面的初始缩放值，为一个数字，可以带小数
+    （5）minimum-scale：允许用户的最小缩放值，为一个数字，可以带小数
+    （6）maximum-scale：允许用户的最大缩放值，为一个数字，可以带小数
+    （7）height：设置layout viewport的高度，这个属性对我们并不重要，很少使用
+    （8）user-scalable：是否允许用户进行缩放，值为"no"或"yes", no代表不允许，yes代表允许
+  -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>学习笔记-父模板</title>
+  <!--注意：html模板文件的缩进只需两个空格！！！-->
+  {% bootstrap_css %}<!--引入bootstrap样式-->
+  {% bootstrap_javascript %}<!--引入bootstrap交互式元素-->
+</head>
+<body>
+<!--
+        Static navbar（顶部导航栏）
+  （1）selector（选择器）：navbar、navbar-expand（始终扩展）
+  （2）Breakpoint（断点、grid tiers网格层）  Class infix（类中缀）  Dimensions（尺寸）
+      Extra small	                       None	                 <576px
+      Small	                             sm	                   ≥576px
+      Medium                             md	                   ≥768px
+      Large	                             lg                    ≥992px
+      Extra large	                       xl	                   ≥1200px
+      Extra extra large                  xxl                	 ≥1400px
+  （3）navbar-dark（暗底浅字）、navbar-light（浅底深字）、bg-success（背景色-绿色）
+-->
+<nav class="navbar  navbar-expand-sm navbar-dark bg-success">
+  <!--
+        容器：固定宽度并支持响应式布局（宽度max-width≥1400px，会根据屏幕宽度同比例放大或缩小）
+    （1）container：会有margin（外边距）和padding（内边距）
+    （2）container-fluid：无内外边距；一直100%显示
+  -->
+  <div class="container-fluid">
+    <!--
+          主页标题/链接
+      （1）navbar-brand：高亮显示项目名
+      （2）模板标签（大括号+百分号）生成URL（与learning_logs/urls.py匹配）
+      （3）learning_logs：命名空间；index：名称独特的URL模式
+      （4）普通页面链接（锚标签生成URL）：<a href="link_url">link text</a>
+    -->
+    <a class="navbar-brand" href="{% url 'learning_logs:index' %}">Learning Log</a>
+    <!--
+            导航栏折叠切换按钮（浏览器窗口太窄、无法水平显示整个导航栏时显示）
+        （1）navbar-toggler：用于折叠插件和其他导航栏切换行为
+        （2）data-bs-toggle="collapse"：内容切换方式-折叠、展开
+        （3）data-bs-target="#navbar"：切换内容-导航栏内容
+        （4）aria-controls="navbar"：按钮控制：导航栏
+        （5）aria-expanded="false"：展开状态-折叠
+        （6）aria-label="Toggle navigation"：标签描述-切换导航
+    -->
+    <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+            aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <!--navbar-toggler-icon:三条线的边框；是依赖navbar-dark和navbar-light的，不然不显示图标-->
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <!--collapse navbar-collapse：按父断点对导航栏内容进行分组和隐藏-->
+    <div id="navbar" class="collapse navbar-collapse">
+      <!--
+        （1）navbar-nav：用于全高和轻量级导航（包括对下拉列表的支持）
+        （2）me-auto：元素居左；margin-right自动设置
+        （3）ms-auto：元素居右
+        （4）aria-current="page"：作用于当前页面
+      -->
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <!--主题页标题/链接-->
+          <a class="nav-link active" href="{% url 'learning_logs:topics' %}">Topics</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav">
+        {% if user.is_authenticated %}<!--判断用户是否登录-->
+        <li class="nav-item">
+          <!--用户已登录：显示一条问候语，以及注销链接-->
+          <a class="nav-link active">Hello, {{ user.username }}.</a>
+        </li>
+        <li class="nav-item">
+          <!--注销返回主页标题/链接-->
+          <a class="nav-link active" href="{% url 'users:logout' %}">log out</a>
+        </li>
+        {% else %}<!--用户未登录：显示注册、登录链接-->
+        <li class="nav-item">
+          <!--用户注册页标题/链接-->
+          <a class="nav-link active" href="{% url 'users:register' %}">register</a>
+        </li>
+        <li class="nav-item">
+          <!--用户登录页标题/链接-->
+          <a class="nav-link active" href="{% url 'users:login' %}">log in</a>
+        </li>
+        {% endif %}<!--if-else语句结束位置-->
+      </ul>
+    </div><!--/.navbar-collapse-->
+  </div>
+</nav>
+<div class="container"><!--容器-->
+  <div class="page-header"><!--页面正文标题：page-header：在标题四周添加适当的间距-->
+    <!--展示页面信息、用户操作-->
+    {% block header %}{% endblock header %}
+  </div>
+  <div>
+    <!--
+          为子模板预留空间
+      （1）content内容块标签：占位符，信息由子模板指定
+      （2）可以使用任意多个块
+    -->
+    {% block content %}{% endblock content %}
+  </div>
+</div><!--/container-->
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>学习笔记-用户注册页</title>
+</head>
+<body>
+<!--主页标题/链接-->
+<!--
+      子模板继承父模板
+  （1）第一行必须包含extends扩展标签，导入base.html的所有内容
+  （2）第一行默认会显示主页标题和链接
+  （3）子模板中非继承父模板的代码都包含在content块标签中
+-->
+{% extends "learning_logs/base.html" %}
+{% load django_bootstrap5 %}<!--加载django-bootstrap5模板标签集-->
+{% block header %}<!--展示页面信息开始位置-->
+<!--问候语：上下的内外间距16px、文本居中、标题样式5、粗体-->
+<div class="my-3 py-3 text-center">
+  <h1 class="display-5 fw-bold">Please register your account.</h1>
+</div>
+{% endblock header %}<!--展示页面信息结束位置-->
+{% block content %}<!--子模板独有内容代码开始位置-->
+<form action="{% url 'users:register' %}" method="post" class="form">
+  {% csrf_token %}<!--防止攻击者利用表单来对服务器未经授权的访问（跨站请求伪造）-->
+  <!--{{ form.as_p }}&lt;!&ndash;显示表单：Django自动创建表单所需的全部字段；as_p让Django以段落格式渲染所有表单元素&ndash;&gt;-->
+  {% bootstrap_form form %}<!--显示表单：Django自动创建表单所需的全部字段；并使用bootstrap样式的表单元素-->
+  <button name="submit" class="btn btn-primary">register</button><!--自定义提交表单按钮-->
+  <!--隐藏表单元素“next”，value：用户成功注册后自动登录然后重定向到主页-->
+  <input type="hidden" name="next" value="{% url 'learning_logs:index' %}">
+</form>
+{% endblock content %}<!--子模板独有内容代码结束位置-->
+</body>
+</html>

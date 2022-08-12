@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>学习笔记-特定主题的条目新增页</title>
+</head>
+<body>
+<!--
+      子模板继承父模板
+  （1）第一行必须包含extends扩展标签，导入base.html的所有内容
+  （2）第一行必须是导航栏
+  （3）子模板中非继承父模板的代码都包含在header和content块标签中
+-->
+{% extends "learning_logs/base.html" %}
+{% load django_bootstrap5 %}<!--加载django-bootstrap5模板标签集-->
+{% block header %}<!--展示页面信息开始位置-->
+<!--标题：背景色-信息色、透明度50%、上下的内外间距16px、文本居中、标题样式6、粗体-->
+<div class="bg-info bg-opacity-50 my-3 py-3 text-center">
+  <h1 class="display-6 fw-bold">Topic: {{ topic }}</h1>
+  <h1 class="display-6 fw-bold">Add a new entry</h1>
+</div>
+{% endblock header %}<!--展示页面信息结束位置-->
+{% block content %}<!--子模板独有内容代码开始位置-->
+<p>
+  <!--返回特定主题链接-->
+  <a class="btn btn-primary" href="{% url 'learning_logs:topic' topic.id  %}">return to the topic</a>
+</p>
+<!--定义一个HTML表单：action指出服务器将提交的表单发回视图函数new_entry()中；method让浏览器以POST请求方式提交数据-->
+<form action="{% url 'learning_logs:new_entry' topic.id %}" method="post">
+  {% csrf_token %}<!--防止攻击者利用表单来对服务器未经授权的访问（跨站请求伪造）-->
+  <!--{{ form.as_p }}&lt;!&ndash;显示表单：Django自动创建表单所需的全部字段；as_p让Django以段落格式渲染所有表单元素&ndash;&gt;-->
+  {% bootstrap_form form %}<!--显示表单：Django自动创建表单所需的全部字段；并使用bootstrap样式的表单元素-->
+  <button name="submit" class="btn btn-primary">add entry</button><!--自定义提交表单按钮-->
+</form>
+{% endblock content %}<!--子模板独有内容代码结束位置-->
+</body>
+</html>

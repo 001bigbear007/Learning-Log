@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>学习笔记-主页</title>
+</head>
+<body>
+<!--
+      子模板继承父模板
+  （1）第一行必须包含extends扩展标签，导入base.html的所有内容
+  （2）第一行必须是导航栏
+  （3）子模板中非继承父模板的代码都包含在header和content块标签中
+-->
+{% extends "learning_logs/base.html" %}
+{% load django_bootstrap5 %}<!--加载django-bootstrap5模板标签集-->
+{% block header %}<!--展示页面信息开始位置-->
+<!--
+        CSS间距表示
+  （1）m - margin（外边距）    p - padding（内边距）
+  （2）t - margin-top/padding-top       b - margin-bottom/padding-bottom
+      s - margin-left/padding-left|margin-right/padding-right
+      e - margin-right/padding-right|margin-left/padding-left
+      x - 同时设置*-left *-right    y - 同时设置*-top *-bottom
+      blank - 所有4个边上设置a或margin或padding
+  （3）rem(font size of the root element)是指相对于根元素（根节点标签html，浏览器font-size=16px）的字体大小的单位
+      $spacer=1rem=16px
+      0 - 0                   1 - $spacer * .25
+      2 - $spacer * .5        3 - $spacer
+      4 - $spacer * 1.5       5 - $spacer * 3
+      auto - 对于设置为自动的类margin
+-->
+<!--主页欢迎语：背景色-黑色、上下的内外间距48px、文本居中、标题样式3、粗体-->
+<div class="bg-dark my-5 py-5 text-center">
+  <h1 class="display-3 fw-bold text-danger">Track your learning.</h1>
+</div>
+{% endblock header %}<!--展示页面信息结束位置-->
+{% block content %}<!--子模板独有内容代码开始位置-->
+<!--bg-opacity-25：背景透明度25%|col-12：不管屏幕大小，此列占最大12份-->
+<div class="bg-info bg-opacity-50 my-2 py-2 col-12">
+  <!--阐述学习笔记功能：前导段落，突出显示、下外间距24px-->
+  <p class="lead mb-4">Learning Log helps you keep track of your learning, for any topic you're learning about.</p>
+  <p class="mb-4">Whenever you learn something new about a topic, make an entry summarizing what you've learned.</p>
+  <!--引导用户注册账号：文本亮色-->
+  <p class="text-light mb-4"><a class="btn btn-primary btn-sm" href="{% url 'users:register' %}" role="button">Register
+    a account</a> to make you own Learning Log, and list the topics you're learning about.</p>
+</div>
+{% endblock content %}<!--子模板独有内容代码结束位置-->
+</body>
+</html>
